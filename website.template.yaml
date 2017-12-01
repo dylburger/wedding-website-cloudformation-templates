@@ -1,0 +1,25 @@
+Description: Resources for wedding website
+
+Parameters: 
+    WebsiteDomain:
+        Type: String
+        Description: The root domain (e.g. cnn.com) of the website
+    WebsiteHost:
+        Type: String
+        Description: The website host (e.g. www.cnn.com) for the website
+
+Resources:
+    WebsiteRootDomainBucket:
+        Type: "AWS::S3::Bucket"
+        Properties:
+            BucketName: !Ref WebsiteDomain
+            WebsiteConfiguration:
+                IndexDocument: index.html
+
+    WebsiteHostBucket:
+        Type: "AWS::S3::Bucket"
+        Properties:
+            BucketName: !Ref WebsiteHost
+            WebsiteConfiguration:
+                RedirectAllRequestsTo:
+                    HostName: !Ref WebsiteDomain
