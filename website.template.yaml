@@ -23,3 +23,33 @@ Resources:
             WebsiteConfiguration:
                 RedirectAllRequestsTo:
                     HostName: !Ref WebsiteDomain
+
+    WebsiteCloudfrontLoggingBucket:
+        Type: "AWS::S3::Bucket"
+        Properties:
+            BucketName: !Join ['-', [ !Ref WebsiteDomain, 'logs' ] ]
+
+    WebsiteCloudfrontDistribution:
+        Type: "AWS::CloudFront::Distribution"
+        Properties:
+            Aliases:
+                - !Ref WebsiteDomain
+                - !Ref WebsiteHost
+            DefaultCacheBehavior:
+                ForwardedValues:
+                    QueryString: false
+                    Cookies:
+                        Forward: "none"
+                TargetOriginId: "website"
+            DefaultRootObject: "index.html"
+            Enabled: true
+            Logging:
+                Bucket: !Ref WebsiteCloudfrontLoggingBucket
+            Origins:
+                -
+                    DomainName: !Ref WebsiteRootDomainBucket
+                    Id: "website"
+                    S3OriginConfig:
+                        OriginAccessIdentity: "origin-access-identity/cloudfront/website-identity"
+
+
