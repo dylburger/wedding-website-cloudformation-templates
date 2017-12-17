@@ -1,4 +1,4 @@
-Description: Resources for wedding website
+Description: Infrastructure for wedding website
 
 Parameters: 
     WebsiteDomain:
@@ -9,6 +9,15 @@ Parameters:
         Description: The website host (e.g. www.cnn.com) for the website
 
 Resources:
+    # Route53 Hosted Zone to manage DNS records for our website
+    # We assume this domain is used ONLY for website hosting.
+    # Otherwise, you may already have DNS configured separately.
+    HostedZone:
+        Type: "AWS::Route53::HostedZone"
+        Properties:
+            Name: !Ref WebsiteDomain
+
+    # We're hosting our website in an S3 bucket corresponding to our root domain
     WebsiteRootDomainBucket:
         Type: "AWS::S3::Bucket"
         Properties:
@@ -16,6 +25,7 @@ Resources:
             WebsiteConfiguration:
                 IndexDocument: index.html
 
+    # For this site, all requests to the website host redirect -> the root domain
     WebsiteHostBucket:
         Type: "AWS::S3::Bucket"
         Properties:
@@ -51,5 +61,3 @@ Resources:
                     Id: "website"
                     S3OriginConfig:
                         OriginAccessIdentity: "origin-access-identity/cloudfront/website-identity"
-
-
