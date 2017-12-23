@@ -2,9 +2,9 @@
 
 This is the [AWS Cloudformation](https://aws.amazon.com/cloudformation/) template I used to develop my [wedding website](https://github.com/dylburger/dylbaum.com). If you're trying to create your own website or want to learn more about Cloudformation, I hope this helps.
 
-This guide assumes you have an active AWS account.
+This guide assumes you have an active AWS account, with permissions to create the necessary resources.
 
-This Cloudformation stack is provided as an example, and creates a number of resources (e.g. DNS zones in Route53) that may not be necessary for your website. *Please examine this template carefully, making modifications as necessary, before deploying it*.
+This Cloudformation stack is provided as an example, and creates resources that may not be necessary for your website. **Please examine this template carefully, making modifications as necessary, before deploying it**.
 
 ## Infrastructure as code
 
@@ -39,7 +39,8 @@ Create the Cloudformation stack by running the following command, replacing the 
         --change-set-type CREATE \
         --change-set-name creating-stack \
         --parameters ParameterKey=WebsiteDomain,ParameterValue=mysite.com \
-            ParameterKey=WebsiteHost,ParameterValue=www.mysite.com
+            ParameterKey=WebsiteHost,ParameterValue=www.mysite.com \
+            ParameterKey=CertificateArn,ParameterValue=<Certificate ARN>
 
 ## Notes
 
