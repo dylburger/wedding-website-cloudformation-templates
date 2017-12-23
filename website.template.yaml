@@ -10,6 +10,10 @@ Parameters:
     CertificateArn:
         Type: String
         Description: The ARN of the TLS certificate used to protect the distribution
+    CloudfrontHostedZoneId:
+        Type: String
+        Description: The hosted zone ID to use for Cloudfront distributions
+        Default: Z2FDTNDATAQYW2
 
 Resources:
     # Route53 Hosted Zone to manage DNS records for our website
@@ -76,3 +80,43 @@ Resources:
                 ViewerCertificate:
                     AcmCertificateArn: !Ref CertificateArn
                     SslSupportMethod: "sni-only"
+
+    WebsiteAliasRecord:
+        Type: "AWS::Route53::RecordSet"
+        Properties:
+            HostedZoneId: !Ref HostedZone
+            Name: !Ref WebsiteHost
+            Type: A
+            AliasTarget:
+                DNSName: !GetAtt WebsiteCloudfrontDistribution.DomainName
+                HostedZoneId: !Ref CloudfrontHostedZoneId
+
+    WebsiteAliasAAAARecord:
+        Type: "AWS::Route53::RecordSet"
+        Properties:
+            HostedZoneId: !Ref HostedZone
+            Name: !Ref WebsiteHost
+            Type: AAAA
+            AliasTarget:
+                DNSName: !GetAtt WebsiteCloudfrontDistribution.DomainName
+                HostedZoneId: !Ref CloudfrontHostedZoneId
+
+    WebsiteAliasRootRecord:
+        Type: "AWS::Route53::RecordSet"
+        Properties:
+            HostedZoneId: !Ref HostedZone
+            Name: !Ref WebsiteDomain
+            Type: A
+            AliasTarget:
+                DNSName: !GetAtt WebsiteCloudfrontDistribution.DomainName
+                HostedZoneId: !Ref CloudfrontHostedZoneId
+
+    WebsiteAliasRootAAAARecord:
+        Type: "AWS::Route53::RecordSet"
+        Properties:
+            HostedZoneId: !Ref HostedZone
+            Name: !Ref WebsiteDomain
+            Type: AAAA
+            AliasTarget:
+                DNSName: !GetAtt WebsiteCloudfrontDistribution.DomainName
+                HostedZoneId: !Ref CloudfrontHostedZoneId
