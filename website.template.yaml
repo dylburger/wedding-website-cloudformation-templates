@@ -7,6 +7,9 @@ Parameters:
     WebsiteHost:
         Type: String
         Description: The website host (e.g. www.cnn.com) for the website
+    CertificateArn:
+        Type: String
+        Description: The ARN of the TLS certificate used to protect the distribution
 
 Resources:
     # Route53 Hosted Zone to manage DNS records for our website
@@ -21,6 +24,7 @@ Resources:
     WebsiteRootDomainBucket:
         Type: "AWS::S3::Bucket"
         Properties:
+            AccessControl: "PublicRead"
             BucketName: !Ref WebsiteDomain
             WebsiteConfiguration:
                 IndexDocument: index.html
@@ -29,6 +33,7 @@ Resources:
     WebsiteHostBucket:
         Type: "AWS::S3::Bucket"
         Properties:
+            AccessControl: "PublicRead"
             BucketName: !Ref WebsiteHost
             WebsiteConfiguration:
                 RedirectAllRequestsTo:
@@ -42,22 +47,32 @@ Resources:
     WebsiteCloudfrontDistribution:
         Type: "AWS::CloudFront::Distribution"
         Properties:
-            Aliases:
-                - !Ref WebsiteDomain
-                - !Ref WebsiteHost
-            DefaultCacheBehavior:
-                ForwardedValues:
-                    QueryString: false
-                    Cookies:
-                        Forward: "none"
-                TargetOriginId: "website"
-            DefaultRootObject: "index.html"
-            Enabled: true
-            Logging:
-                Bucket: !Ref WebsiteCloudfrontLoggingBucket
-            Origins:
-                -
-                    DomainName: !Ref WebsiteRootDomainBucket
-                    Id: "website"
-                    S3OriginConfig:
-                        OriginAccessIdentity: "origin-access-identity/cloudfront/website-identity"
+            DistributionConfig:
+                Aliases:
+                    - !Ref WebsiteDomain
+                    - !Ref WebsiteHost
+                Comment: "Distribution for wedding website"
+                DefaultCacheBehavior:
+                    Compress: true
+                    ForwardedValues:
+                        QueryString: false
+                        Cookies:
+                            Forward: "none"
+                    TargetOriginId: "website"
+                    ViewerProtocolPolicy: "redirect-to-https"
+                DefaultRootObject: "index.html"
+                Enabled: true
+                HttpVersion: "http2"
+                IPV6Enabled: true
+                Logging:
+                    Bucket: !Join ['.', [!Ref WebsiteCloudfrontLoggingBucket, 's3.amazonaws.com' ] ]
+                Origins:
+                    -
+                        DomainName: !Join ['.', [!Ref WebsiteRootDomainBucket, 's3.amazonaws.com' ] ]
+                        Id: "website"
+                        CustomOriginConfig:
+                            HTTPPort: 80
+                            OriginProtocolPolicy: http-only
+                ViewerCertificate:
+                    AcmCertificateArn: !Ref CertificateArn
+                    SslSupportMethod: "sni-only"
