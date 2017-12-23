@@ -28,6 +28,10 @@ This declarative syntax facilitates resource creation. These blocks are more ter
 
 Cloudformation manages resource dependencies, creating the right resources in the right order. If one part of the stack (a collection of resources) fails to be created, the whole set of changes is rolled back.
 
+## Dependencies
+
+If you want to use an ACM SSL certificate to protect your Cloudfront distribution, create the certificate first, then pass in the ARN as the value of the `CertificateArn` parameter to the Cloudformation template. You can use [this script](https://github.com/dylburger/create-and-validate-acm-certificate) to create the certificate and validate it using DNS.
+
 ## Usage
 
 Create the Cloudformation stack by running the following command, replacing the ParameterValue entries with values specific to your site.
