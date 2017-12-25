@@ -33,16 +33,6 @@ Resources:
             WebsiteConfiguration:
                 IndexDocument: index.html
 
-    # For this site, all requests to the website host redirect -> the root domain
-    WebsiteHostBucket:
-        Type: "AWS::S3::Bucket"
-        Properties:
-            AccessControl: "PublicRead"
-            BucketName: !Ref WebsiteHost
-            WebsiteConfiguration:
-                RedirectAllRequestsTo:
-                    HostName: !Ref WebsiteDomain
-
     WebsiteCloudfrontLoggingBucket:
         Type: "AWS::S3::Bucket"
         Properties:
