@@ -72,7 +72,9 @@ Resources:
                     Bucket: !Join ['.', [!Ref WebsiteCloudfrontLoggingBucket, 's3.amazonaws.com' ] ]
                 Origins:
                     -
-                        DomainName: !Join ['.', [!Ref WebsiteRootDomainBucket, 's3.amazonaws.com' ] ]
+                        # We use the website URL as the origin in order to serve "clean" URLs with Gatsby.
+                        # See https://www.gatsbyjs.org/docs/deploy-gatsby/ for more info.
+                        DomainName: !Join ['.', [!Ref WebsiteRootDomainBucket, 's3-website-us-east-1.amazonaws.com' ] ]
                         Id: "website"
                         CustomOriginConfig:
                             HTTPPort: 80
