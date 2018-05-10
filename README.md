@@ -45,9 +45,3 @@ Create the Cloudformation stack by running the following command, replacing the 
         --parameters ParameterKey=WebsiteDomain,ParameterValue=mysite.com \
             ParameterKey=WebsiteHost,ParameterValue=www.mysite.com \
             ParameterKey=CertificateArn,ParameterValue=<Certificate ARN>
-
-## Notes
-
-Some of the scripts in this repo depend on third party Python libraries (e.g. `boto3` for interacting with AWS). Please create a `python3` [virtual environment](http://docs.python-guide.org/en/latest/dev/virtualenvs/) and install the dependencies contained in `requirements.txt` by running:
-
-    pip install -r requirements.txt
